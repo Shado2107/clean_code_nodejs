@@ -25,6 +25,10 @@ async function deleteTask(taskId) {
     return taskModel.findByIdAndDelete(taskId);
 }
 
+async function shareWith(){
+    
+}
+
 module.exports = {
     getAllTasks,
     createTask,

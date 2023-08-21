@@ -1,5 +1,5 @@
 // taskController.js
-const taskService = require('../services/taskService');
+const taskService = require('../services/taskServices');
 const response = require('../utils/response');
 
 async function getAllTasks(req, res) {
@@ -26,5 +26,5 @@ module.exports = {
     getAllTasks,
     createTask,
     updateTask,
-    deleteTask
+    deleteTask 
 };

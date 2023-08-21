@@ -7,6 +7,14 @@ function sendSuccess(res, data, message = 'Request successful') {
     });
 }
 
+function sendError(res, statut=500,  message = 'Error' ){
+    res.status(statut).json({
+        success: false,
+        message
+    })
+}
+
 module.exports = {
-    sendSuccess
+    sendSuccess,
+    sendError
 };

@@ -6,7 +6,15 @@ async function getAllTasks() {
 }
 
 async function createTask(taskData) {
-    return taskModel.create(taskData);
+    const {title, description} = taskData;
+    const newTask = await new taskModel({
+        title,
+        description
+    });
+    const savedTask = await newTask.save();
+
+    return savedTask;
+    
 }
 
 async function updateTask(taskId, taskData) {

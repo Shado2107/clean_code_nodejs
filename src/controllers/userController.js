@@ -2,6 +2,7 @@
 const userService = require("../services/userService");
 const response = require("../utils/response");
 const validation = require("../utils/validation");
+const  session = require('express-session')
 
 async function getAllUsers(req, res) {
     const users = await userService.getAllUsers();
@@ -9,14 +10,14 @@ async function getAllUsers(req, res) {
 }
 
 async function createUser(req, res) {
-    const userData = req.body;
+    const {username, password} = req.body
+    try {
+        const user = await userService.createUser(username, password);
+        return response.sendSuccess(res, user)
 
-    if(!validation.isValidUser(userData)){
-        response.sendError(res, 400, 'Invalid user data');
+    } catch(err){
+        return response.sendError(res, 500, "Error")
     }
-
-    const user = await userService.createUser(userData);
-    response.sendSuccess(res, user)
 }
 
 async function updateUser(req, res) {
@@ -43,9 +44,32 @@ async function deleteUser(req, res){
     response.sendSuccess(res, null, 'User deleted successfully')
 }
 
+async function loginUser(req, res){
+   const {username, password} = req.body;
+
+   try{
+    const token = await userService.loginUser(username, password);
+    response.sendSuccess(res, token)
+   } catch(err){
+    res.status(401).json({ error: error.message });
+   }
+
+}
+
+async function logout(req, res){
+    req.session.destroy(err => {
+        if(err){
+
+        }
+        res.clearCookie()
+    })
+}
+
+
 module.exports = {
     getAllUsers,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 };

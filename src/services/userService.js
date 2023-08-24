@@ -1,26 +1,50 @@
 //userService.js
 const userModel = require("../models/userModel");
 const bcrypt = require('bcryptjs');
+const { generateToken } = require("../utils/functions");
 
 
 async function getAllUsers(){
     return userModel.find();
-}
+} 
 
 
-async function createUser(userData){
-    const hash = bcrypt.hashSync(userData.password, 5)
+async function createUser(username, password){
+    const hash = await bcrypt.hashSync(password, 10)
+    
     const newUser = new userModel({
         ...userData,
         password: hash
     })
     await newUser.save();
-    // return userModel.create(userData);
+    const data = {user: newUser} ;
+
+    return data;
+
 }
 
-async function loginUser(userData){
+async function loginUser(username, password){
+    const user = await userModel.findOne({username});
+    if(!user){
+        throw new Error("User not found");
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if(!isPasswordCorrect){
+        throw new Error('Incorrect password');
+    } 
+
+    const token = jwt.sign(
+        {userId: user._id},
+        "secret-key",
+        {expiresIn: '1h'}
+    )
     
+    return token;
+
 }
+
+
 
 async function logout(){
 
@@ -50,11 +74,13 @@ async function doesEmailExist(email){
 
 
 
+
 module.exports = {
     getAllUsers,
     createUser,
     updateUser,
     deleteUser,
     doesUserExist,
-    doesEmailExist
+    doesEmailExist,
+    loginUser
 };

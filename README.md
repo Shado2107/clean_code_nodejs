@@ -3,7 +3,7 @@
 Ce projet est un exemple d'application Node.js qui suit une architecture "Clean Code". L'objectif de cette architecture est de rendre le code plus lisible, maintenable et évolutif en organisant le code en différentes couches, en séparant les responsabilités et en appliquant les principes de conception solides.
 
 ## Structure du Projet
-
+ 
 Le projet est organisé en utilisant la structure suivante:
   
 ├── src/

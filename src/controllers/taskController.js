@@ -29,13 +29,22 @@ async function createTask(req, res) {
 }
 
 async function updateTask(req, res) {
-    const updatedTask = await taskService.updateTask(req.params.taskId, req.body);
-    response.sendSuccess(res, updatedTask);
+    try {
+        const updatedTask = await taskService.updateTask(req.params.taskId, req.body);
+        response.sendSuccess(res, updatedTask);
+    } catch(err){
+        return response.sendError(res, 500, err.message)
+    }
+    
 }
 
 async function deleteTask(req, res) {
-    await taskService.deleteTask(req.params.taskId);
-    response.sendSuccess(res, null, 'Task deleted successfully.');
+    try{
+        await taskService.deleteTask(req.params.taskId);
+        response.sendSuccess(res, null, 'Task deleted successfully.');
+    } catch(err){
+        return response.sendError(res, 500, err.message)
+    }   
 }
 
 async function shareTaskWith(req, res){
@@ -44,7 +53,6 @@ async function shareTaskWith(req, res){
     
     try{
         const task = await taskService.shareTaskWith(taskId, userId);
-
         return response.sendSuccess(task, 200)
     } catch(err){
         return response.sendError(res, 400, err.message)

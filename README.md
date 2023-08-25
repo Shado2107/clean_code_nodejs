@@ -7,16 +7,16 @@ Ce projet est un exemple d'application Node.js qui suit une architecture "Clean 
 Le projet est organisé en utilisant la structure suivante:
   
 ├── src/
-│ ├── controllers/
-│ │ ├── taskController.js
-│ ├── routes/
-│ │ ├── taskRoutes.js
-│ ├── models/
-│ │ ├── taskModel.js
-│ ├── services/
-│ │ ├── taskService.js
-│ ├── utils/
-│ │ ├── response.js
+│   ├── controllers/
+│   │   ├── taskController.js
+│   ├── routes/
+│   │   ├── taskRoutes.js
+│   ├── models/
+│   │   ├── taskModel.js
+│   ├── services/
+│   │   ├── taskService.js
+│   ├── utils/
+│   │   ├── response.js
 ├── server.js
 
 

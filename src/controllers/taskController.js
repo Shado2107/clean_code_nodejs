@@ -3,13 +3,29 @@ const taskService = require('../services/taskServices');
 const response = require('../utils/response');
 
 async function getAllTasks(req, res) {
-    const tasks = await taskService.getAllTasks();
-    response.sendSuccess(res, tasks);
+    try{
+        const tasks = await taskService.getAllTasks();
+        response.sendSuccess(res, tasks);
+    } catch(err){
+        response.sendError(res, 500, err.message)
+    }
+    
 }
 
 async function createTask(req, res) {
-    const task = await taskService.createTask(req.body);
-    response.sendSuccess(res, task);
+    try{
+
+        const {title, description, priority, dueDate, shareWith, createdBy,completed} = req.body;
+                
+        const task = await taskService.createTask(title, description, priority, dueDate, shareWith, createdBy, completed);
+        response.sendSuccess(res, task);
+
+    }catch(err){
+
+        response.sendError(res, 500, err.message)
+
+    }
+    
 }
 
 async function updateTask(req, res) {
@@ -22,13 +38,23 @@ async function deleteTask(req, res) {
     response.sendSuccess(res, null, 'Task deleted successfully.');
 }
 
-async function shareWith(req, res){
+async function shareTaskWith(req, res){
+    const taskId = req.params.taskId;
+    const userId = req.body.userId
     
+    try{
+        const task = await taskService.shareTaskWith(taskId, userId);
+
+        return response.sendSuccess(task, 200)
+    } catch(err){
+        return response.sendError(res, 400, err.message)
+    }
 }
 
 module.exports = {
     getAllTasks,
     createTask,
     updateTask,
-    deleteTask 
+    deleteTask,
+    shareTaskWith
 };

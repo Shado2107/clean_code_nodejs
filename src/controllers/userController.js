@@ -2,7 +2,6 @@
 const userService = require("../services/userService");
 const response = require("../utils/response");
 const validation = require("../utils/validation");
-const  session = require('express-session')
 
 async function getAllUsers(req, res) {
     const users = await userService.getAllUsers();
@@ -10,9 +9,9 @@ async function getAllUsers(req, res) {
 }
 
 async function createUser(req, res) {
-    const {username, password} = req.body
+    const {username, password, email} = req.body
     try {
-        const user = await userService.createUser(username, password);
+        const user = await userService.createUser(username, password, email);
         return response.sendSuccess(res, user)
 
     } catch(err){
@@ -44,16 +43,17 @@ async function deleteUser(req, res){
     response.sendSuccess(res, null, 'User deleted successfully')
 }
 
-async function loginUser(req, res){
-   const {username, password} = req.body;
+async function loginUser(req, res) {
+    const { username, password } = req.body;
 
-   try{
-    const token = await userService.loginUser(username, password);
-    response.sendSuccess(res, token)
-   } catch(err){
-    res.status(401).json({ error: error.message });
-   }
+    try {
+        const token = await userService.loginUser(username, password);
+        
 
+        response.sendSuccess(res, token);
+    } catch (err) {
+        response.sendError(res, 400, err.message); // Envoyez le message d'erreur à la réponse
+    }
 }
 
 async function logout(req, res){

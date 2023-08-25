@@ -1,7 +1,7 @@
 //userService.js
 const userModel = require("../models/userModel");
-const bcrypt = require('bcryptjs');
-const { generateToken } = require("../utils/functions");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 async function getAllUsers(){
@@ -9,11 +9,12 @@ async function getAllUsers(){
 } 
 
 
-async function createUser(username, password){
+async function createUser(username, password, email){
     const hash = await bcrypt.hashSync(password, 10)
     
     const newUser = new userModel({
-        ...userData,
+        username,
+        email,
         password: hash
     })
     await newUser.save();
@@ -23,27 +24,36 @@ async function createUser(username, password){
 
 }
 
-async function loginUser(username, password){
-    const user = await userModel.findOne({username});
-    if(!user){
-        throw new Error("User not found");
+
+async function loginUser(username, password) {
+    try {
+        const user = await userModel.findOne({ username });
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            throw new Error('Incorrect password');
+        }
+
+        const token = jwt.sign(
+            { 
+                userId: user._id 
+            },
+                process.env.JWT_KEY, // Remplacez par votre véritable clé secrète
+            { 
+                expiresIn: '1h' 
+            }
+        );
+
+        const data = {"user": user, "Token":token}
+        return data ;
+
+    } catch (error) {
+        throw error; // Ré-throw l'erreur pour la traiter en amont si nécessaire
     }
-
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if(!isPasswordCorrect){
-        throw new Error('Incorrect password');
-    } 
-
-    const token = jwt.sign(
-        {userId: user._id},
-        "secret-key",
-        {expiresIn: '1h'}
-    )
-    
-    return token;
-
 }
-
 
 
 async function logout(){

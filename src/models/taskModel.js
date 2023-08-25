@@ -5,8 +5,36 @@ const taskSchema = new mongoose.Schema({
     title: {
         type: String
     },
-    description: String,
-    completed: Boolean
-});
+    description: {
+        type: String
+    },
+    priority: {
+        type: String,
+        enum: ["low", "medium","high"],
+        default: "low"
+    },
+    dueDate:{
+        type: Date
+    },
+    completed: {
+        type: Boolean, 
+        default: false,
+    },
+    shareWith: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }
+},
+{
+    timestamps: true,
+}
+
+);
 
 module.exports = mongoose.model('Task', taskSchema);

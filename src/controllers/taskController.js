@@ -22,6 +22,10 @@ async function deleteTask(req, res) {
     response.sendSuccess(res, null, 'Task deleted successfully.');
 }
 
+async function shareWith(req, res){
+    
+}
+
 module.exports = {
     getAllTasks,
     createTask,
